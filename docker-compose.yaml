@@ -1,0 +1,49 @@
+services:
+  app:
+    build:
+      context: .
+      target: builder  # Use the builder stage for development
+    container_name: go-app
+    stdin_open: true
+    tty: true
+    command: /bin/sh
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    environment:
+      - DB_HOST=db
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:-postgres}
+      - DB_NAME=${DB_NAME:-event_trigger}
+      - DB_PORT=${DB_PORT:-5432}
+      - APP_PORT=${APP_PORT:-8080}
+    volumes:
+      - .:/app  # Mount source code for development
+    depends_on:
+      - db
+    networks:
+      - backend
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=${DB_USER:-postgres}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-postgres}
+      - POSTGRES_DB=${DB_NAME:-event_trigger}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${DB_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  postgres_data: 
