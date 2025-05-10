@@ -59,7 +59,7 @@ func main() {
 
 	graphql.GET("/", func(c *gin.Context) {
 		c.Writer.Header().Set("Content-Type", "text/html")
-		playground.Handler("GraphQL playground", "/query").ServeHTTP(c.Writer, c.Request)
+		playground.Handler("GraphQL playground", "/graphql/query").ServeHTTP(c.Writer, c.Request)
 	})
 	graphql.Any("/query", func(c *gin.Context) {
 		srv.ServeHTTP(c.Writer, c.Request)
