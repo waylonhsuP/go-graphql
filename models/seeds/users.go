@@ -1,7 +1,6 @@
 package seeds
 
 import (
-	"event-trigger-demo/config"
 	"event-trigger-demo/models"
 	"log"
 )
@@ -21,15 +20,9 @@ func SeedUsers() {
 	}
 
 	for _, user := range users {
-		result := config.DB.Create(&user)
+		result := models.DB.Create(&user)
 		if result.Error != nil {
 			log.Printf("Error seeding user %s: %v", user.Email, result.Error)
 		}
 	}
 }
-
-func RunSeeds() {
-	log.Println("Running database seeds...")
-	SeedUsers()
-	log.Println("Database seeding completed!")
-} 

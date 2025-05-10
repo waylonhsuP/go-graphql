@@ -1,4 +1,4 @@
-package database
+package models
 
 import (
 	"fmt"
@@ -8,7 +8,9 @@ import (
 	"gorm.io/gorm"
 )
 
-func InitDB() (*gorm.DB, error) {
+var DB *gorm.DB
+
+func InitDB() {
 	// Get database configuration from environment variables
 	dbHost := os.Getenv("DB_HOST")
 	dbUser := os.Getenv("DB_USER")
@@ -38,10 +40,12 @@ func InitDB() (*gorm.DB, error) {
 		dbHost, dbUser, dbPassword, dbName, dbPort)
 
 	// Open database connection
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	var err error
+	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		return nil, fmt.Errorf("failed to connect to database: %v", err)
+		panic(fmt.Errorf("failed to connect to database: %v", err))
 	}
 
-	return db, nil
+	DB.AutoMigrate(&User{})
+	DB.AutoMigrate(&Todo{})
 } 
