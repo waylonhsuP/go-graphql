@@ -21,8 +21,5 @@ POSTGRES_DB=postgres
 APP_PORT=8080
 EOL
 
-# Make the script executable
-chmod +x setup.sh
-
 echo "Environment variables have been generated in .env file"
 echo "Please keep your .env file secure and never commit it to version control" 
